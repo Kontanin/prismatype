@@ -1,0 +1,79 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id     String  @id @default(uuid())
+  username    String  @unique
+  email       String
+  password    String
+  role        String
+  is_active   Boolean
+  firstname   String
+  lastname    String
+  address     String?
+  subdistrict String?
+  country     String?
+  zipcode     Int?
+  orders     Order[] // A user can have multiple orders
+  blob        Blob[]
+}
+
+model Blob {
+  id        String  @id @default(uuid())
+  title     String  @unique
+  tag       String?
+  content   String
+  is_active Boolean
+  user_id   String // Reference to the User's ID
+  username  String
+
+  User        User?   @relation(fields: [userUser_id], references: [id])
+  userUser_id String?
+}
+
+model Product {
+  id           String       @id @default(uuid())
+  product_name String       @unique
+  password     String
+  is_active    Boolean
+  description  String?
+  stock        Int?
+  unit_price   Int?
+  image        String?
+  freeShipping Boolean?
+  company      String?
+  category     String?
+  order_items  Order_Item[] // A product can be included in multiple order items
+}
+
+model Order {
+  id                String       @id @default(uuid())
+  is_active         Boolean
+  shippingFee       Boolean?
+  total             Int
+  payment_intent_id String?
+  status            String
+  timestamps        DateTime
+  tax               Int
+  user_id           String // Each order belongs to one user
+  user              User         @relation(fields: [user_id], references: [id])
+  order_items       Order_Item[] // An order can have multiple order items
+}
+
+model Order_Item {
+  id         String  @id @default(uuid())
+  quantity   Int
+  unit_price Int
+  is_active  Boolean
+  product_id String // Each order item belongs to one product
+  order_id   String // Each order item belongs to one order
+  order      Order   @relation(fields: [order_id], references: [id])
+  product    Product @relation(fields: [product_id], references: [id])
+}
+
