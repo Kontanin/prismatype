@@ -1,6 +1,5 @@
-const ProductActivation = require('../model/Product');
-const CustomError = require('../errors');
-const {FindId}=require('../unity/findId') 
+
+const CustomError = require('../errors');``
 
 import { Prisma } from "@prisma/client";
 import { PrismaClient } from "@prisma/client";
@@ -21,6 +20,7 @@ const CreateProduct = async (req:Request, res:Response) => {
     company     ,
     category    
   } = req.body;
+  console.table(req.body)
   try{
     const product = await prisma.product.create(
       {

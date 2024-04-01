@@ -1,10 +1,7 @@
-
-const express = require('express');
-
-const { authentication, authorizePermissions } = require('../middlewares/auth');
+const  { authentication:BlogAu, authorizePermissions:BlogAuPer } =require('../middlewares/auth') ;
 
 // const CustomError = require('../errors');
-
+const Blogexpress = require('express');
 // const errorHandlerMiddleware = require('../middlewares/error-handler');
 const {
   CreateBlog,
@@ -13,16 +10,15 @@ const {
   BlogListbyUser,
   Blog,
 } = require('../controllers/Blog');
-const router = express.Router();
+const BlogRouter = Blogexpress.Router();
 
 // router.use(errorHandlerMiddleware);
 
-router.post('/create', authentication, CreateBlog);
+BlogRouter.post('/create', BlogAu, CreateBlog);
 
-router.patch('/edit/:id', authentication, EditBlog);
-router.delete('/delete', authentication, DeleteBlog);
+BlogRouter.patch('/edit/:id', BlogAu, EditBlog);
+BlogRouter.delete('/delete', BlogAu, DeleteBlog);
 
-router.get('/bloglist', authentication, BlogListbyUser);
-router.get('/blog-id/:id', authentication, Blog);
-
-module.exports = router;
+BlogRouter.get('/bloglist', BlogAu, BlogListbyUser);
+BlogRouter.get('/blog-id/:id', BlogAu, Blog);
+module.exports = BlogRouter;

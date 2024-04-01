@@ -1,9 +1,10 @@
-const express = require('express');
+
 const CustomError = require('../errors');
 import { Prisma } from "@prisma/client";
 import { PrismaClient } from "@prisma/client";
 const prisma= new PrismaClient();
 import  { Request, Response } from "express";
+
 import { blob } from "stream/consumers";
 declare global {
   namespace Express {
@@ -120,6 +121,7 @@ const Blog = async (req:Request,  res:Response) => {
     return res.status(400).send({ msg: e });
   }
 };
+
 module.exports = {
   CreateBlog,
   EditBlog,

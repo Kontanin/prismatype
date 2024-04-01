@@ -14,7 +14,7 @@ const prisma= new PrismaClient();
 
 const UserRouter = require('./router/User');
 // // const OrderRouter = require('./router/Orders');
-// // const ProductRouter = require('./router/Product');
+const ProductRouter = require('./router/Product');
 const BlogRouter = require('./router/Blog');
 const bodyParser = require('body-parser');
 
@@ -43,7 +43,7 @@ app.use('/blog', BlogRouter);
 app.use('/user', UserRouter);
 
 // app.use('/orders', OrderRouter);
-// app.use('/product', ProductRouter);
+app.use('/product', ProductRouter);
 
 // app.use(errorHandlerMiddleware);
 

@@ -15,13 +15,11 @@ declare global {
 
 
 
-const authentication = (req:Request, res: Response, next: NextFunction) => {
-  const token = req.headers['authorization'];
+export const authentication = (req:Request, res: Response, next: NextFunction) => {
+  const token = req.headers && req.headers['authorization'];
 
   if (!token)
-    return res
-      .status(403)
-      .send({ message: 'A token is required for authentication' });
+    return res?.status(401).send({ message: 'A token is required for authentication' });
 
   try {
     const decoded = jwt.verify(token.replace('Bearer ', ''), SECRET_KEY);
@@ -31,7 +29,8 @@ const authentication = (req:Request, res: Response, next: NextFunction) => {
     return res.status(401).send({ message: 'Invalid token' });
   }
 };
-const authorizePermissions = (roles:string ) => {
+
+export const authorizePermissions = (roles:string ) => {
   return (req:Request, res: Response, next: NextFunction) => {
     console.log(roles, 'roles', req.user.role);
     if (!roles.includes(req.user.role)) {
@@ -43,8 +42,8 @@ const authorizePermissions = (roles:string ) => {
     next();
   };
 };
-module.exports = { authentication, 
-  
-  authorizePermissions 
 
+module.exports = { 
+  authentication, 
+  authorizePermissions 
 };

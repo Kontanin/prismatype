@@ -1,9 +1,17 @@
-const express = require('express');
-
-
-
-const multerModule = require('../middlewares/multer');
-const { authentication, authorizePermissions } = require('../middlewares/auth');
+const Productexpress = require('express');
+import multer, { FileFilterCallback } from 'multer'
+import express, { Request, Response } from "express";
+const storage = multer.diskStorage({
+  destination: function (req: Request, file, cb) {
+      cb(null, 'uploads/'); // Define destination directory
+  },
+  filename: function (req: Request, file, cb) {
+      cb(null, file.originalname); // Keep original filename
+  }
+});
+const upload = multer({ storage: storage });
+const {fileStorage} = require('../middlewares/multer');
+const { authentication:ProductAu, authorizePermissions:ProductAuPer } = require('../middlewares/auth');
 const {
   CreateProduct,
   EditProduct,
@@ -12,26 +20,25 @@ const {
   ProductById,
   uploadSingleImage,
 } = require('../controllers/Product');
-const router = express.Router();
+const ProductRouter = Productexpress.Router();
 
-router.post('/create', authentication, CreateProduct);
-router.post(
-  '/upload/:id',
-  authentication,
-  authorizePermissions('admin'),
-  multerModule.uploadImg.single('image'),
-  uploadSingleImage
-);
+ProductRouter.post('/create', ProductAu, CreateProduct);
+// ProductRouter.post(
+//   '/upload/:id',
+//   ProductAu,
+//   ProductAu('admin'),
+//   upload.single('file')
+// );
 
-router.patch('/edit/:id', authentication, EditProduct);
-router.get('/list', authentication, Productlist);
-router.get('/get/:id', authentication, ProductById);
+ProductRouter.patch('/edit/:id', ProductAu, EditProduct);
+ProductRouter.get('/list', ProductAu, Productlist);
+ProductRouter.get('/get/:id', ProductAu, ProductById);
 
-router.delete(
+ProductRouter.delete(
   '/delete/:id',
-  authentication,
-  authorizePermissions('admin'),
+  ProductAu,
+  ProductAuPer('admin'),
   DeleteProduct
 );
 
-module.exports = router;
+module.exports = ProductRouter;
