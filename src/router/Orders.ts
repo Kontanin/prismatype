@@ -11,15 +11,15 @@ const {
 const OrderRouter = express.Router();
 
 OrderRouter.post('/create', OrderAu, CreateOrder);
-OrderRouter.delete('/delete/:id', OrderAu, DeleteOrder);
-OrderRouter.get(
-  '/orderlist',
-  OrderAu,
-  OrderAuPer('admin'),
-  Orderlist
-);
-OrderRouter.get('/order-by-id/:id', OrderAu, OrderDetail);
+// OrderRouter.delete('/delete/:id', OrderAu, DeleteOrder);
+// OrderRouter.get(
+//   '/orderlist',
+//   OrderAu,
+//   OrderAuPer('admin'),
+//   Orderlist
+// );
+// OrderRouter.get('/order-by-id/:id', OrderAu, OrderDetail);
 
-OrderRouter.patch('/update/:id', OrderAu, UpdateOrder);
+// OrderRouter.patch('/update/:id', OrderAu, UpdateOrder);
 
 module.exports = OrderRouter;

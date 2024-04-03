@@ -1,5 +1,4 @@
-const OrderActivation = require('../model/Orders');
-const ProductActivation = require('../model/Product');
+
 const CustomError = require('../errors');
 
 import express, { Request, Response } from "express";
@@ -7,7 +6,11 @@ import { Prisma } from "@prisma/client";
 import { PrismaClient } from "@prisma/client";
 import { stringify } from "querystring";
 import { create } from "domain";
-
+declare module 'express-serve-static-core' {
+  interface Request {
+    user?: any;
+  }
+}
 
 
 
@@ -17,16 +20,23 @@ import { create } from "domain";
       price:number;
       product: string;
     }
+    interface FakeStripeAPIResponse {
+      client_secret: string;
+      amount: number;
+      StatusPayment: number;
+    }
 const prisma= new PrismaClient();
 // YYMM-000000
-const fakeStripeAPI = async ({ amount, currency }) => {
+const fakeStripeAPI = async ({ amount, currency }:{amount: number; currency: string }) => {
   const client_secret = 'someRandomValue';
   const StatusPayment = 1;
+ const findValue=currency
+  const pay=amount
   return { client_secret, amount, StatusPayment };
 };
 
-
-const FindOrder=async (id)=>{
+//funct
+const FindOrder=async (id:string)=>{
   const findUser= await prisma.product.findFirst(
     {where:{id,is_active:true}}
     )
@@ -39,7 +49,7 @@ interface dbProduct {
   id:string;
 }
 
-const CreateOrder = async (req, res) => {
+const CreateOrder = async (req:Request, res:Response) => {
   const { items: cartItems, tax, shippingFee } = req.body;
   if (!cartItems || cartItems.length < 1) {
     throw new CustomError.BadRequestError(
@@ -106,34 +116,34 @@ let newArray = OrderItems.map(obj => ({ ...obj, order_id: CreateOrder.id }));
 let ListItem=prisma.order_Item.createMany({
   data:newArray
 })
-return res.json(CreateOrder).status({ msg: 'create orders sussess' });
+return res.json(CreateOrder).status(200).send({ msg: 'done' }) ;
 }
 
-const UpdateOrder = async (req, res) => {
-  const order_id = req.params.id;
-  const { status, shippingFee, paymentIntentId, OrderItems, total } = req.body;
-    if(await !FindOrder(order_id)){
-      return res.status(400).send({ msg:"not found" });
-    }
-  const find = await prisma.order.update(
-    {where:{order_id}
-  ,data:
-    {
-      status: status,
-      shippingFee: shippingFee,
-      OrderItems: OrderItems,
-      total: total,
-    }}
-  )
+// const UpdateOrder = async (req:Request, res:Response) => {
+//   const order_id = req.params.id;
+//   const { status, shippingFee, paymentIntentId, OrderItems, total } = req.body;
+//     if(await !FindOrder(order_id)){
+//       return res.status(400).send({ msg:"not found" });
+//     }
+//   const find = await prisma.order_Item.update(
+//     {where:{id:order_id}
+//   ,data:
+//     {
+//       status: status,
+//       shippingFee: shippingFee,
+//       OrderItems: OrderItems,
+//       total: total,
+//     }}
+//   )
 
-  if (find) {
-    res.status(200).send({ msg: find });
-  } else {
-    res.status(400).send({ msg: 'not done' });
-  }
-};
+//   if (find) {
+//     res.status(200).send({ msg: find });
+//   } else {
+//     res.status(400).send({ msg: 'not done' });
+//   }
+// };
 
-// const DeleteOrder = async (req, res) => {
+// const DeleteOrder = async (req:Request, res:Response) => {
 //   try {
 //     const id = req.params.id;
 
@@ -145,7 +155,7 @@ const UpdateOrder = async (req, res) => {
 //   }
 // };
 
-// const Orderlist = async (req, res) => {
+// const Orderlist = async (req:Request, res:Response) => {
 //   try {
 //     const orders = await OrderActivation.find({});
 //     res.status(200).json({ orders, count: orders.length });
@@ -153,7 +163,7 @@ const UpdateOrder = async (req, res) => {
 //     res.status(400).json({ msg: e });
 //   }
 // };
-// const OrderDetail = async (req, res) => {
+// const OrderDetail = async (req:Request, res:Response) => {
 //   const id = req.params.id;
 //   try {
 //     const orders = await OrderActivation.findById(id);

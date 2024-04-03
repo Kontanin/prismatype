@@ -8,7 +8,7 @@ datasource db {
 }
 
 model User {
-  id     String  @id @default(uuid())
+  id          String  @id @default(uuid())
   username    String  @unique
   email       String
   password    String
@@ -20,7 +20,7 @@ model User {
   subdistrict String?
   country     String?
   zipcode     Int?
-  orders     Order[] // A user can have multiple orders
+  orders      Order[] // A user can have multiple orders
   blob        Blob[]
 }
 
@@ -32,15 +32,13 @@ model Blob {
   is_active Boolean
   user_id   String // Reference to the User's ID
   username  String
-
-  User        User?   @relation(fields: [userUser_id], references: [id])
-  userUser_id String?
+  User      User?   @relation(fields: [User_id], references: [id])
+  User_id   String
 }
 
 model Product {
   id           String       @id @default(uuid())
   product_name String       @unique
-  password     String
   is_active    Boolean
   description  String?
   stock        Int?
@@ -76,4 +74,3 @@ model Order_Item {
   order      Order   @relation(fields: [order_id], references: [id])
   product    Product @relation(fields: [product_id], references: [id])
 }
-

@@ -22,7 +22,7 @@ const {
 } = require('../controllers/Product');
 const ProductRouter = Productexpress.Router();
 
-ProductRouter.post('/create', ProductAu, CreateProduct);
+ProductRouter.post('/create', ProductAu,ProductAuPer('admin'), CreateProduct);
 // ProductRouter.post(
 //   '/upload/:id',
 //   ProductAu,
@@ -30,7 +30,7 @@ ProductRouter.post('/create', ProductAu, CreateProduct);
 //   upload.single('file')
 // );
 
-ProductRouter.patch('/edit/:id', ProductAu, EditProduct);
+ProductRouter.patch('/edit/:id', ProductAu  ,ProductAuPer('admin'), EditProduct);
 ProductRouter.get('/list', ProductAu, Productlist);
 ProductRouter.get('/get/:id', ProductAu, ProductById);
 

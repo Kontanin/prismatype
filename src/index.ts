@@ -3,6 +3,7 @@ import { Prisma } from "@prisma/client";
 import express, { Request, Response } from "express";
 require('express-async-errors');
 const dotenv = require('dotenv');
+
 import { PrismaClient } from "@prisma/client";
 dotenv.config();
 
@@ -13,22 +14,19 @@ const prisma= new PrismaClient();
 
 
 const UserRouter = require('./router/User');
-// // const OrderRouter = require('./router/Orders');
+const OrderRouter = require('./router/Orders');
 const ProductRouter = require('./router/Product');
 const BlogRouter = require('./router/Blog');
 const bodyParser = require('body-parser');
 
 // const CustomError = require('./errors');
 
-// const errorHandlerMiddleware = require('./middlewares/error-handler');
-// var user = [
-//   { email: 'boss@gmail.com', password: 123 },
-//   { email: 'boss1@gamil.com', password: 123 },
-// ];
+const errorHandlerMiddleware = require('./middlewares/error-handler');
 
 
-// app.use(express.static('./public'));
-// app.use(cors());
+
+app.use(express.static('./public'));
+app.use(cors());
 
 app.use(bodyParser.json({ limit: '5mb', extended: true }));
 app.use(bodyParser.urlencoded({ limit: '5mb', extended: true }));
@@ -42,7 +40,7 @@ app.use('/blog', BlogRouter);
 
 app.use('/user', UserRouter);
 
-// app.use('/orders', OrderRouter);
+app.use('/orders', OrderRouter);
 app.use('/product', ProductRouter);
 
 // app.use(errorHandlerMiddleware);

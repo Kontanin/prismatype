@@ -2,6 +2,7 @@ const  { authentication:BlogAu, authorizePermissions:BlogAuPer } =require('../mi
 
 // const CustomError = require('../errors');
 const Blogexpress = require('express');
+
 // const errorHandlerMiddleware = require('../middlewares/error-handler');
 const {
   CreateBlog,
@@ -17,7 +18,7 @@ const BlogRouter = Blogexpress.Router();
 BlogRouter.post('/create', BlogAu, CreateBlog);
 
 BlogRouter.patch('/edit/:id', BlogAu, EditBlog);
-BlogRouter.delete('/delete', BlogAu, DeleteBlog);
+BlogRouter.delete('/delete/:id', BlogAu, DeleteBlog);
 
 BlogRouter.get('/bloglist', BlogAu, BlogListbyUser);
 BlogRouter.get('/blog-id/:id', BlogAu, Blog);

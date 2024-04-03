@@ -11,7 +11,6 @@ const CreateProduct = async (req:Request, res:Response) => {
   let {
     id  ,        
     product_name,      
-    password    ,
     description ,
     stock      ,
     unit_price    ,
@@ -20,14 +19,11 @@ const CreateProduct = async (req:Request, res:Response) => {
     company     ,
     category    
   } = req.body;
-  console.table(req.body)
   try{
     const product = await prisma.product.create(
       {
-        data:{
-          id  ,        
+        data:{        
           product_name,      
-          password    ,
           is_active :true  ,
           description ,
           stock      ,
@@ -41,6 +37,7 @@ const CreateProduct = async (req:Request, res:Response) => {
       )
     return res.json(product).status(200);
   }catch(errors){
+    console.log(errors)
     return res.json({msg:errors}).status(400);
   }
 };
@@ -53,7 +50,7 @@ const Productlist = async (req:Request, res:Response) => {
     }
   })
 
-  res.status(200).json({ Productlist, count: products.length });
+  res.status(200).json({ products, count: products.length });
 };
 
 const EditProduct = async (req:Request, res:Response) => {
