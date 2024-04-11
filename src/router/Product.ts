@@ -22,23 +22,13 @@ const {
 } = require('../controllers/Product');
 const ProductRouter = Productexpress.Router();
 
-ProductRouter.post('/create', ProductAu,ProductAuPer('admin'), CreateProduct);
-// ProductRouter.post(
-//   '/upload/:id',
-//   ProductAu,
-//   ProductAu('admin'),
-//   upload.single('file')
-// );
+ProductRouter.post('/create',ProductAu, CreateProduct);
+ProductRouter.post('/upload/:id',ProductAu,upload.single('file'));
 
-ProductRouter.patch('/edit/:id', ProductAu  ,ProductAuPer('admin'), EditProduct);
+ProductRouter.patch('/edit/:id', ProductAu  ,EditProduct);
 ProductRouter.get('/list', ProductAu, Productlist);
 ProductRouter.get('/get/:id', ProductAu, ProductById);
 
-ProductRouter.delete(
-  '/delete/:id',
-  ProductAu,
-  ProductAuPer('admin'),
-  DeleteProduct
-);
+ProductRouter.delete('/delete/:id',ProductAu,DeleteProduct);
 
 module.exports = ProductRouter;

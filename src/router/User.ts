@@ -1,5 +1,5 @@
-import express from "express";
-const { authentication:UserAu, authorizePermissions:OrderAuPer }=require( '../middlewares/auth')
+import express, { Request, Response } from "express";
+const { authentication:UserAu, authorizePermissions:UserAuPer }=require( '../middlewares/auth')
 const {
   Register,
   Login,
@@ -15,12 +15,14 @@ const router = express.Router();
 router.post('/register', Register);
 router.post('/login', Login);
 
-router.delete('/delete/:id',OrderAuPer,OrderAuPer('admin'), DeleteUser);
+router.delete('/delete/:id',UserAu, DeleteUser);
 
-router.patch('/update/:id',OrderAuPer, UpdateUser);
+router.patch('/update/:id',UserAu, UpdateUser);  
 
-router.patch('/pass/:id',OrderAuPer ,UpdatePass);
+//problem here ,UserAuPer(['admin', 'manager'])
+
+router.patch('/pass/:id',UserAu ,UpdatePass);
 
 router.get('/information/:id', Information);
 
-module.exports = router;
+module.exports= router;

@@ -3,23 +3,20 @@ const  { authentication:OrderAu, authorizePermissions:OrderAuPer } =require('../
 
 const {
   CreateOrder,
+
   UpdateOrder,
   DeleteOrder,
-  Orderlist,
+  OrderlistbyUser,
   OrderDetail,
 } = require('../controllers/Orders');
 const OrderRouter = express.Router();
 
 OrderRouter.post('/create', OrderAu, CreateOrder);
 // OrderRouter.delete('/delete/:id', OrderAu, DeleteOrder);
-// OrderRouter.get(
-//   '/orderlist',
-//   OrderAu,
-//   OrderAuPer('admin'),
-//   Orderlist
-// );
+OrderRouter.get('/orderlist/:id',OrderAu,OrderlistbyUser);
 // OrderRouter.get('/order-by-id/:id', OrderAu, OrderDetail);
-
-// OrderRouter.patch('/update/:id', OrderAu, UpdateOrder);
+OrderRouter.patch('/update/:OrderId', OrderAu, UpdateOrder)
+  
+// );
 
 module.exports = OrderRouter;

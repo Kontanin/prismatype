@@ -4,6 +4,7 @@ const UnauthenticatedError = require('./unauthenticated');
 const CustomAPIError = require('./custom-api')
 const NotFoundError = require('./not-found');
 const BadRequestError = require('./bad-request');
+const unauthenticated = require('./unauthenticated');
 // ไม่ผ่านการอำนาจ
 
 

@@ -13,7 +13,7 @@ model User {
   email       String
   password    String
   role        String
-  is_active   Boolean
+  isActive    Boolean
   firstname   String
   lastname    String
   address     String?
@@ -25,52 +25,51 @@ model User {
 }
 
 model Blob {
-  id        String  @id @default(uuid())
-  title     String  @unique
-  tag       String?
-  content   String
-  is_active Boolean
-  user_id   String // Reference to the User's ID
-  username  String
-  User      User?   @relation(fields: [User_id], references: [id])
-  User_id   String
+  id       String  @id @default(uuid())
+  title    String  @unique
+  tag      String?
+  content  String
+  isActive Boolean
+  userId   String // Reference to the User's ID
+  username String
+  User     User?   @relation(fields: [userId], references: [id])
 }
 
 model Product {
-  id           String       @id @default(uuid())
-  product_name String       @unique
-  is_active    Boolean
+  id           String      @id @default(uuid())
+  productName  String      @unique
+  isActive     Boolean
   description  String?
   stock        Int?
-  unit_price   Int?
+  unitPrice    Int?
   image        String?
   freeShipping Boolean?
   company      String?
   category     String?
-  order_items  Order_Item[] // A product can be included in multiple order items
+  orderItems   OrderItem[] // A product can be included in multiple order items
 }
 
 model Order {
-  id                String       @id @default(uuid())
-  is_active         Boolean
-  shippingFee       Boolean?
-  total             Int
-  payment_intent_id String?
-  status            String
-  timestamps        DateTime
-  tax               Int
-  user_id           String // Each order belongs to one user
-  user              User         @relation(fields: [user_id], references: [id])
-  order_items       Order_Item[] // An order can have multiple order items
+  id              String      @id @default(uuid())
+  isActive        Boolean
+  shippingFee     Boolean?
+  total           Int
+  paymentIntentId String?
+  status          String
+  timestamps      DateTime
+  tax             Int
+  userId          String // Each order belongs to one user
+  user            User        @relation(fields: [userId], references: [id])
+  orderItems      OrderItem[] // An order can have multiple order items
 }
 
-model Order_Item {
-  id         String  @id @default(uuid())
-  quantity   Int
-  unit_price Int
-  is_active  Boolean
-  product_id String // Each order item belongs to one product
-  order_id   String // Each order item belongs to one order
-  order      Order   @relation(fields: [order_id], references: [id])
-  product    Product @relation(fields: [product_id], references: [id])
+model OrderItem {
+  id        String  @id @default(uuid())
+  quantity  Int
+  unitPrice Int
+  isActive  Boolean
+  productId String // Each order item belongs to one product
+  orderId   String // Each order item belongs to one order
+  order     Order   @relation(fields: [orderId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
 }

@@ -43,20 +43,11 @@ app.use('/user', UserRouter);
 app.use('/orders', OrderRouter);
 app.use('/product', ProductRouter);
 
-// app.use(errorHandlerMiddleware);
+app.use(errorHandlerMiddleware);
 
 
 
-app.get("/test",(req:Request,res:Response)=>{
-  prisma.user.findMany( {
-    where:{
-      username:"abc",
-      is_active:true
-    }
-  })
 
-  res.send("Runing")
-})
 
 
 

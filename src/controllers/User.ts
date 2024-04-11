@@ -13,7 +13,7 @@ import express, { Request, Response } from "express";
 
 const FindUser=async (id:string)=>{
   const findUser= await prisma.user.findFirst(
-    {where:{id,is_active:true}}
+    {where:{id,isActive:true}}
     )
     return findUser
 }
@@ -56,7 +56,7 @@ const Register = async (req:Request, res:Response) => {
         subdistrict,
         zipcode,
         password: encryptedPassword,
-        is_active: true,
+        isActive: true,
       }
     await prisma.user.create({data:{   email,
       username,
@@ -68,7 +68,7 @@ const Register = async (req:Request, res:Response) => {
       subdistrict,
       zipcode,
       password: encryptedPassword,
-      is_active: true,}});
+      isActive: true,}});
 
     return res.status(200).json({ message: 'User created successfully' });
   } catch (error) {
@@ -103,7 +103,7 @@ const Login = async (req:Request, res:Response) => {
     id: user?.id,
     token,
   };
-  console.log(data.role,"role",user?.role,user?.is_active)
+  console.log(data.role,"role",user?.role,user?.isActive)
     res.status(200).json(data);
   } catch (error) {
     console.log(error);
@@ -123,13 +123,13 @@ const DeleteUser = async (req:Request, res:Response) => {
   try{
 
     await prisma.user.update({
-      where:{id,is_active:true},
+      where:{id,isActive:true},
         data:{
-          is_active: false
+          isActive: false
         },
         }
     );
-    return res.status(200).send({ message: user?.username+'deleted' });
+    return res.status(200).send({ message: user.username+' was deleted' });
   }catch(e){
     return res.status(400).send({ message: e });
   }
@@ -153,7 +153,7 @@ const UpdateUser = async (req:Request, res:Response) => {
     username
   } = req.body;
   const update = await prisma.user.update({
-    where:{id,is_active:true},data:{
+    where:{id,isActive:true},data:{
       email,
       firstname,
         lastname,
@@ -177,7 +177,7 @@ interface Find1 {
   email?: string | null | undefined;
   username?: string | null | undefined;      
   role?: string | null | undefined;    
-  is_active?: boolean | null | undefined;
+  isActive?: boolean | null | undefined;
   firstname?: string | null | undefined; 
   lastname?: string | null | undefined;
   address?: string | null | undefined;  
@@ -198,12 +198,12 @@ const Information = async (req: Request, res: Response) => {
     return res.status(400).send({ message: "not found" });
   }
   console.log(find,"test")
-  const { email, username, role, is_active, firstname, lastname, address, subdistrict, country, zipcode }: Find1 = find;
+  const { email, username, role, isActive, firstname, lastname, address, subdistrict, country, zipcode }: Find1 = find;
   return res.json({
     email,
     username,
     role,
-    is_active,
+    isActive,
     firstname,
     lastname,
     address,
@@ -219,10 +219,13 @@ const UpdatePass = async (req:Request, res:Response) => {
   
   const id = req.params.id;
   const user= await FindUser(id)
-  console.log(user)
+  console.log("qwer",user?.password)
 
   if(password==Newpassword){
     return res.status(400).send({ message: "same password" });
+  }
+  if(!Newpassword){
+    return res.status(400).send({ message: "not found new password" });
   }
   if(! user){
     return res.status(400).send({ message: "not found" });
@@ -234,6 +237,7 @@ const UpdatePass = async (req:Request, res:Response) => {
   }
 
   const encryptedPassword = bcrypt.hashSync(Newpassword, 10);
+  console.log(encryptedPassword,"eeeeeeeeeeeeeeeeee")
   await prisma.user.update({
     where:{id},data:{password:encryptedPassword
     }
@@ -254,7 +258,7 @@ const UpdateRole = async (req:Request, res:Response) => {
 
 
   const update = await prisma.user.update({
-    where:{id,is_active:true},data:{
+    where:{id,isActive:true},data:{
   role
     }
   }

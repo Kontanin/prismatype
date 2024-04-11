@@ -9,7 +9,7 @@ import  { Request, Response } from "express";
 
 const FindBlobId=async (id:string)=>{
   const findUser= await prisma.blob.findFirst(
-    {where:{id,is_active:true}}
+    {where:{id,isActive:true}}
     )
     return findUser
 }
@@ -19,10 +19,8 @@ const FindBlobId=async (id:string)=>{
 
 const CreateBlog = async (req: Request, res: Response) => {
 
-  const { title, username, tag, content } = req.body;
-  console.log(content, title, "con");
-
   try {
+    const { title, username, tag, content } = req.body;
     // Check if a blog with the same title already exists
     const existingBlog = await prisma.blob.findFirst({ where: { title } });
     if (existingBlog) {
@@ -32,22 +30,25 @@ const CreateBlog = async (req: Request, res: Response) => {
     // Assuming you have the user ID associated with this blog entry
     // const userId = req?.user.id; // Replace this with the actual way to fetch user ID
       let userId=req?.user?.id
-    console.log(userId,"userid")
+    if(!userId){
+      return res.status(400).json({ error: "user not found" });
+    }
     // Create a new blog entry including the user field
     const newBlog = await prisma.blob.create({
       data: {
-        user_id:userId,
+        userId,
         title,
         tag,
         content,
         username,
-        is_active: true,
-        User: { connect: { id: userId } } // Use connect to establish the relationship
-      }
-    })
+        isActive: true,
+ // Use connect to establish the relationship
+      },
+    });
 
     // Return the newly created blog entry
-    return res.status(200).json(newBlog);
+    // return res.status(200).json(newBlog);
+    return res.status(200).json({MSG:"done create blog"});
   } catch (error) {
     console.error("Error creating blog:", error);
     return res.status(500).json({ error: "Internal Server Error" });
@@ -64,7 +65,7 @@ const EditBlog = async (req:Request,  res:Response) => {
   const { title, username, tag, content } = req.body;
   const blob =await prisma.blob.update({
     where:{
-      id,is_active:true
+      id,isActive:true
     }, data: {
       title, tag, content,username
     }
@@ -86,9 +87,9 @@ const DeleteBlog = async (req:Request,  res:Response) => {
     console.log
     const blob =await prisma.blob.update({
       where:{
-        id,is_active:true
+        id,isActive:true
       }, data: {
-        is_active:false
+        isActive:false
       }
   
     })
@@ -98,10 +99,10 @@ const DeleteBlog = async (req:Request,  res:Response) => {
 };
 
 async function BlogListbyUser(req:Request,  res:Response) {
-  const user_id = req?.user?.id;
-console.log(user_id,"user_id")
+  const userId = req?.user?.id;
+console.log(userId,"userId")
   const blob= await prisma.blob.findMany(
-    {where:{user_id:user_id,is_active:true}}
+    {where:{userId:userId,isActive:true}}
     )
   return res.status(200).send({"blob lenght":blob.length,"blob":blob});
 }

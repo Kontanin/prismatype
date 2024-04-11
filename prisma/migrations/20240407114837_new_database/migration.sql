@@ -5,7 +5,7 @@ CREATE TABLE "User" (
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "role" TEXT NOT NULL,
-    "is_active" BOOLEAN NOT NULL,
+    "isActive" BOOLEAN NOT NULL,
     "firstname" TEXT NOT NULL,
     "lastname" TEXT NOT NULL,
     "address" TEXT,
@@ -22,10 +22,10 @@ CREATE TABLE "Blob" (
     "title" TEXT NOT NULL,
     "tag" TEXT,
     "content" TEXT NOT NULL,
-    "is_active" BOOLEAN NOT NULL,
-    "user_id" TEXT NOT NULL,
+    "isActive" BOOLEAN NOT NULL,
+    "userId" TEXT NOT NULL,
     "username" TEXT NOT NULL,
-    "userUser_id" TEXT,
+    "UserId" TEXT NOT NULL,
 
     CONSTRAINT "Blob_pkey" PRIMARY KEY ("id")
 );
@@ -33,12 +33,11 @@ CREATE TABLE "Blob" (
 -- CreateTable
 CREATE TABLE "Product" (
     "id" TEXT NOT NULL,
-    "product_name" TEXT NOT NULL,
-    "password" TEXT NOT NULL,
-    "is_active" BOOLEAN NOT NULL,
+    "productName" TEXT NOT NULL,
+    "isActive" BOOLEAN NOT NULL,
     "description" TEXT,
     "stock" INTEGER,
-    "unit_price" INTEGER,
+    "unitPrice" INTEGER,
     "image" TEXT,
     "freeShipping" BOOLEAN,
     "company" TEXT,
@@ -50,28 +49,28 @@ CREATE TABLE "Product" (
 -- CreateTable
 CREATE TABLE "Order" (
     "id" TEXT NOT NULL,
-    "is_active" BOOLEAN NOT NULL,
+    "isActive" BOOLEAN NOT NULL,
     "shippingFee" BOOLEAN,
     "total" INTEGER NOT NULL,
-    "payment_intent_id" TEXT,
+    "paymentIntentId" TEXT,
     "status" TEXT NOT NULL,
     "timestamps" TIMESTAMP(3) NOT NULL,
     "tax" INTEGER NOT NULL,
-    "user_id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
 
     CONSTRAINT "Order_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "Order_Item" (
+CREATE TABLE "OrderItem" (
     "id" TEXT NOT NULL,
     "quantity" INTEGER NOT NULL,
-    "unit_price" INTEGER NOT NULL,
-    "is_active" BOOLEAN NOT NULL,
-    "product_id" TEXT NOT NULL,
-    "order_id" TEXT NOT NULL,
+    "unitPrice" INTEGER NOT NULL,
+    "isActive" BOOLEAN NOT NULL,
+    "productId" TEXT NOT NULL,
+    "orderId" TEXT NOT NULL,
 
-    CONSTRAINT "Order_Item_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "OrderItem_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -81,16 +80,16 @@ CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
 CREATE UNIQUE INDEX "Blob_title_key" ON "Blob"("title");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Product_product_name_key" ON "Product"("product_name");
+CREATE UNIQUE INDEX "Product_productName_key" ON "Product"("productName");
 
 -- AddForeignKey
-ALTER TABLE "Blob" ADD CONSTRAINT "Blob_userUser_id_fkey" FOREIGN KEY ("userUser_id") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Blob" ADD CONSTRAINT "Blob_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Order" ADD CONSTRAINT "Order_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Order" ADD CONSTRAINT "Order_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Order_Item" ADD CONSTRAINT "Order_Item_order_id_fkey" FOREIGN KEY ("order_id") REFERENCES "Order"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "OrderItem" ADD CONSTRAINT "OrderItem_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "Order"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Order_Item" ADD CONSTRAINT "Order_Item_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "Product"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "OrderItem" ADD CONSTRAINT "OrderItem_productId_fkey" FOREIGN KEY ("productId") REFERENCES "Product"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

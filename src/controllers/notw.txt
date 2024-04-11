@@ -20,3 +20,20 @@ const createMany = await prisma.user.createMany({
   ],
   skipDuplicates: true, // Skip 'Bobo'
 })
+
+
+{
+    "items": [
+        {
+            "id": "94bd3600-4696-4eda-9943-f3dc6bab4676",
+            "amount":2
+        },
+        {
+            "id": "ce7afb00-9562-4bf7-9283-3e2fa9127bc6",
+            "amount":3
+        }
+    ],
+    "tax": 200,
+    "shippingFee":true
+
+}

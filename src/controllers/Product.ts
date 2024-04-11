@@ -10,10 +10,10 @@ import express, { Request, Response } from "express";
 const CreateProduct = async (req:Request, res:Response) => {
   let {
     id  ,        
-    product_name,      
+    productName,      
     description ,
     stock      ,
-    unit_price    ,
+    unitPrice   ,
     image       ,
     freeShipping ,
     company     ,
@@ -23,11 +23,11 @@ const CreateProduct = async (req:Request, res:Response) => {
     const product = await prisma.product.create(
       {
         data:{        
-          product_name,      
-          is_active :true  ,
+          productName,      
+          isActive :true  ,
           description ,
           stock      ,
-          unit_price    ,
+          unitPrice    ,
           image       ,
           freeShipping ,
           company     ,
@@ -46,7 +46,7 @@ const CreateProduct = async (req:Request, res:Response) => {
 const Productlist = async (req:Request, res:Response) => {
   const products= await prisma.product.findMany({
     where:{
-      is_active:true
+      isActive:true
     }
   })
 
@@ -56,11 +56,11 @@ const Productlist = async (req:Request, res:Response) => {
 const EditProduct = async (req:Request, res:Response) => {
   const id = req.params.id;
   let {
-    product_name,
+    productName,
     description,
     stock,
     status,
-    unit_price,
+    unitPrice,
     freeShipping,
     company,
     category,
@@ -70,10 +70,10 @@ const EditProduct = async (req:Request, res:Response) => {
     where:{
       id
     },data:{
-      product_name,
+      productName,
       description,
       stock,
-      unit_price,
+      unitPrice,
       freeShipping,
       company,
       category,
@@ -91,9 +91,9 @@ const DeleteProduct = async (req:Request, res:Response) => {
 
   const product = await prisma.product.update({
     where:{
-      id,is_active:true
+      id,isActive:true
     },data:{
-      is_active:false
+      isActive:false
     }
   })
 
