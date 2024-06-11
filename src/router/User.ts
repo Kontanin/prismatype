@@ -1,5 +1,8 @@
-import express, { Request, Response } from "express";
-const { authentication:UserAu, authorizePermissions:UserAuPer }=require( '../middlewares/auth')
+import express, { Request, Response } from 'express';
+const {
+  authentication: UserAu,
+  authorizePermissions: UserAuPer,
+} = require('../middlewares/auth');
 const {
   Register,
   Login,
@@ -7,7 +10,7 @@ const {
   UpdateUser,
   Information,
   UpdatePass,
-  UpdateRole,
+  ValidateToken
 } = require('../controllers/User');
 
 const router = express.Router();
@@ -15,14 +18,14 @@ const router = express.Router();
 router.post('/register', Register);
 router.post('/login', Login);
 
-router.delete('/delete/:id',UserAu, DeleteUser);
+router.delete('/delete/:id', UserAu, UserAuPer('admin'), DeleteUser);
 
-router.patch('/update/:id',UserAu, UpdateUser);  
+router.patch('/update/:id', UserAu, UpdateUser);
 
-//problem here ,UserAuPer(['admin', 'manager'])
-
-router.patch('/pass/:id',UserAu ,UpdatePass);
+router.patch('/pass/:id', UserAu, UpdatePass);
 
 router.get('/information/:id', Information);
 
-module.exports= router;
+
+router.post('/validate-token',  ValidateToken )
+module.exports = router;

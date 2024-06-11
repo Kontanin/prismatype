@@ -13,13 +13,12 @@ const {
 } = require('../controllers/Blog');
 const BlogRouter = Blogexpress.Router();
 
-// router.use(errorHandlerMiddleware);
 
-BlogRouter.post('/create', BlogAu, CreateBlog);
+
+BlogRouter.post('/create', BlogAu,BlogAuPer('admin'), CreateBlog);
 
 BlogRouter.patch('/edit/:id', BlogAu, EditBlog);
-BlogRouter.delete('/delete/:id', BlogAu, DeleteBlog);
-
+BlogRouter.delete('/delete/:id', BlogAu,BlogAuPer('admin'), DeleteBlog);
 BlogRouter.get('/bloglist', BlogAu, BlogListbyUser);
 BlogRouter.get('/blog-id/:id', BlogAu, Blog);
 module.exports = BlogRouter;

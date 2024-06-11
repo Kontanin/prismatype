@@ -115,12 +115,7 @@ const CreateOrder = async (req:Request, res:Response) => {
     currency: 'usd',
   });
 
-  let status;
-  if (paymentIntent.StatusPayment) {
-    status = 'paid';
-  } else {
-    status = 'pending';
-  }
+  const status = paymentIntent.StatusPayment ? 'paid' : 'pending';
   let paymentIntentId=paymentIntent.client_secret
 
 let userId=req?.user?.id
@@ -138,13 +133,13 @@ let CreateOrder= await prisma.order.create({
   }
 })
 
-let newArray = OrderItems.map((obj) => {
-  obj["orderId"]=CreateOrder.id
-return obj
-});
-console.log(newArray,"newArray")
+const orderItemsWithOrderId = OrderItems.map(item => ({
+  ...item,
+  orderId: CreateOrder.id
+}));
+console.log(orderItemsWithOrderId,"newArray")
 let ListItem= await prisma.orderItem.createMany({
-data:  newArray
+data:  orderItemsWithOrderId
 })
 console.log(ListItem,"ListItem")
 return res.status(200).send({ msg: 'done create order' }) ;
@@ -302,7 +297,7 @@ module.exports = {
   CreateOrder,
 
 UpdateOrder,
- // DeleteOrder,
+ DeleteOrder,
  OrderlistbyUser,
   UpdateStatusOrder,
 }

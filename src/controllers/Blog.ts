@@ -33,8 +33,8 @@ const CreateBlog = async (req: Request, res: Response) => {
     if(!userId){
       return res.status(400).json({ error: "user not found" });
     }
-    // Create a new blog entry including the user field
-    const newBlog = await prisma.blob.create({
+
+    await prisma.blob.create({
       data: {
         userId,
         title,
@@ -42,12 +42,10 @@ const CreateBlog = async (req: Request, res: Response) => {
         content,
         username,
         isActive: true,
- // Use connect to establish the relationship
+
       },
     });
 
-    // Return the newly created blog entry
-    // return res.status(200).json(newBlog);
     return res.status(200).json({MSG:"done create blog"});
   } catch (error) {
     console.error("Error creating blog:", error);

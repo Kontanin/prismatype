@@ -1,5 +1,8 @@
 const express = require('express');
-const  { authentication:OrderAu, authorizePermissions:OrderAuPer } =require('../middlewares/auth') ;
+const {
+  authentication: OrderAu,
+  authorizePermissions: OrderAuPer,
+} = require('../middlewares/auth');
 
 const {
   CreateOrder,
@@ -12,11 +15,9 @@ const {
 const OrderRouter = express.Router();
 
 OrderRouter.post('/create', OrderAu, CreateOrder);
-// OrderRouter.delete('/delete/:id', OrderAu, DeleteOrder);
-OrderRouter.get('/orderlist/:id',OrderAu,OrderlistbyUser);
+OrderRouter.delete('/delete/:id', DeleteOrder);
+OrderRouter.get('/orderlist/:id', OrderAu, OrderlistbyUser);
 // OrderRouter.get('/order-by-id/:id', OrderAu, OrderDetail);
-OrderRouter.patch('/update/:OrderId', OrderAu, UpdateOrder)
-  
-// );
+OrderRouter.patch('/update/:OrderId', OrderAu, UpdateOrder);
 
 module.exports = OrderRouter;
