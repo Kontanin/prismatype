@@ -19,6 +19,9 @@ const UserRouter = require('./router/User');
 const OrderRouter = require('./router/Orders');
 const ProductRouter = require('./router/Product');
 const BlogRouter = require('./router/Blog');
+import chatRoutes from './routes/Chat';
+import feedbackRoutes from './routes/Feedback';
+import promotionRoutes from './routes/Promotion';
 const bodyParser = require('body-parser');
 
 // const CustomError = require('./errors');
@@ -35,7 +38,9 @@ app.use(bodyParser.urlencoded({ limit: '5mb', extended: true }));
 
 // app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 // app.get('/api-docs', swaggerUi.setup(swaggerDocument));
-
+app.use('/api/chat', chatRoutes);
+app.use('/api/feedback', feedbackRoutes);
+app.use('/api/promotion', promotionRoutes);
 app.use('/blog', BlogRouter);
 app.use('/user', UserRouter);
 app.use('/orders', OrderRouter);
