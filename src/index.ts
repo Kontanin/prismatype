@@ -5,7 +5,7 @@ import path from 'path';
 import http from 'http';
 import express, { Request, Response } from 'express';
 import { Server } from 'socket.io';
-
+import promotionRouter from '../src/router/p';
 const dotenv = require('dotenv');
 import { PrismaClient } from '@prisma/client';
 dotenv.config();
@@ -35,7 +35,7 @@ app.use(bodyParser.urlencoded({ limit: '5mb', extended: true }));
 
 // app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 // app.get('/api-docs', swaggerUi.setup(swaggerDocument));
-
+app.use('/api', promotionRouter);
 app.use('/blog', BlogRouter);
 app.use('/user', UserRouter);
 app.use('/orders', OrderRouter);
