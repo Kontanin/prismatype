@@ -1,4 +1,7 @@
-import express, { Request, Response, NextFunction } from 'express';
-const notFound = (req:Request, res:Response) => res.status(404).send('Route does not exist')
+import { Request, Response, NextFunction } from 'express';
 
-module.exports = notFound
+const notFoundMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  res.status(404).json({ msg: 'Route not found' });
+};
+
+export default notFoundMiddleware;

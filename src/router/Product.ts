@@ -1,13 +1,7 @@
-const Productexpress = require('express');
-
-
+import express from 'express';
 import upload from '../middlewares/multer';
-const {
-  authentication: ProductAu,
-  authorizePermissions: ProductAuPer,
-} = require('../middlewares/auth');
-
-const {
+import { authentication as ProductAu, authorizePermissions as ProductAuPer } from '../middlewares/auth';
+import {
   CreateProduct,
   EditProduct,
   DeleteProduct,
@@ -15,18 +9,18 @@ const {
   ProductById,
   Pagination,
   Picture,
-} = require('../controllers/Product');
+} from '../controllers/Product';
 
-const ProductRouter = Productexpress.Router();
+const ProductRouter = express.Router();
 
 ProductRouter.post(
   '/create',
   ProductAu,
   ProductAuPer('admin'),
   upload.fields([{ name: 'image' }]),
-
   CreateProduct
 );
+
 ProductRouter.post('/upload/:id', ProductAu);
 
 ProductRouter.patch(
@@ -35,6 +29,7 @@ ProductRouter.patch(
   upload.fields([{ name: 'image' }]),
   EditProduct
 );
+
 ProductRouter.get('/list', Productlist);
 ProductRouter.get('/get/:id', ProductAu, ProductById);
 
@@ -44,8 +39,22 @@ ProductRouter.delete(
   ProductAuPer('admin'),
   DeleteProduct
 );
+
 ProductRouter.post('/page', Pagination);
 
 ProductRouter.get('/image/:id', Picture);
 
-module.exports = ProductRouter;
+export default ProductRouter;
+// app.use('/api/chat', chatRoutes);
+// app.use('/api/feedback', feedbackRoutes);
+// app.use('/api/promotion', promotionRoutes);
+// app.use('/blog', BlogRouter);
+// app.use('/user', UserRouter);
+// app.use('/orders', OrderRouter);
+
+// import UserRouter from './router/User';
+// import OrderRouter from './router/Orders';
+// import BlogRouter from './router/Blog';
+// import chatRoutes from './router/Chat';
+// import feedbackRoutes from './router/Feedback';
+// import promotionRoutes from './router/Promotion';

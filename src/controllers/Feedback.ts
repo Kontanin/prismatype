@@ -4,6 +4,9 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export const getFeedbackByUser = async (req: Request, res: Response) => {
+  if (!req.user || !req.user.id) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
   const userId = req.user.id; // Assuming req.user is populated by auth middleware
   try {
     const feedbacks = await prisma.feedback.findMany({
@@ -17,11 +20,14 @@ export const getFeedbackByUser = async (req: Request, res: Response) => {
 };
 
 export const createFeedback = async (req: Request, res: Response) => {
+  if (!req.user || !req.user.id) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
   const { title, content } = req.body;
   const userId = req.user.id; // Assuming req.user is populated by auth middleware
   try {
     const feedback = await prisma.feedback.create({
-      data: { title, content, userId },
+      data: { title, content, userId, isActive: true },
     });
     res.json(feedback);
   } catch (error) {
@@ -30,6 +36,9 @@ export const createFeedback = async (req: Request, res: Response) => {
 };
 
 export const deleteFeedback = async (req: Request, res: Response) => {
+  if (!req.user || !req.user.id) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
   const { id } = req.params;
   try {
     await prisma.feedback.delete({

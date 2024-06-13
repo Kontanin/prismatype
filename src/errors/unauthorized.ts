@@ -1,12 +1,11 @@
-const { StatusCodes:StatusCodesFORBIDDEN } = require('http-status-codes');
-const CustomAPIErrorFORBIDDEN = require('./custom-api');
+class UnauthorizedError extends Error {
+  statusCode: number;
 
-
-  class UnauthorizedErrorFORBIDDEN extends CustomAPIErrorFORBIDDEN {
-    constructor(message: string) {
-      super(message);
-      this.statusCode = StatusCodesFORBIDDEN.UNAUTHORIZED;
-    }
+  constructor(message: string) {
+    super(message);
+    this.name = "UnauthorizedError";
+    this.statusCode = 403;
   }
+}
 
-module.exports = {UnauthorizedErrorFORBIDDEN};
+export default UnauthorizedError;

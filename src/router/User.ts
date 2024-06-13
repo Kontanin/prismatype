@@ -1,17 +1,17 @@
 import express, { Request, Response } from 'express';
-const {
-  authentication: UserAu,
-  authorizePermissions: UserAuPer,
-} = require('../middlewares/auth');
-const {
+import {
+  authentication as UserAu,
+  authorizePermissions as UserAuPer,
+} from '../middlewares/auth';
+import {
   Register,
   Login,
   DeleteUser,
   UpdateUser,
   Information,
   UpdatePass,
-  ValidateToken
-} = require('../controllers/User');
+  ValidateToken,
+} from '../controllers/User';
 
 const router = express.Router();
 
@@ -26,6 +26,6 @@ router.patch('/pass/:id', UserAu, UpdatePass);
 
 router.get('/information/:id', Information);
 
+router.post('/validate-token', ValidateToken);
 
-router.post('/validate-token',  ValidateToken )
-module.exports = router;
+export default router;

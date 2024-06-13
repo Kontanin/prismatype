@@ -1,18 +1,12 @@
+import CustomAPIError from './custom-api';
+import UnauthenticatedError from './unauthenticated';
+import NotFoundError from './not-found';
+import BadRequestError from './bad-request';
+import UnauthorizedError from './unauthorized';
 
-// "  "ไม่ผานการยืนยัน"
-const UnauthenticatedError = require('./unauthenticated');
-const CustomAPIError = require('./custom-api')
-const NotFoundError = require('./not-found');
-const BadRequestError = require('./bad-request');
-const unauthenticated = require('./unauthenticated');
-// ไม่ผ่านการอำนาจ
-
-
-const UnauthorizedError = require('./unauthorized');
-module.exports = {
-  CustomAPIError,
-  UnauthenticatedError,
-  NotFoundError,
-  BadRequestError,
-  UnauthorizedError,
-};
+// src/errors/index.ts
+export { default as CustomAPIError } from './custom-api';
+export { default as UnauthenticatedError } from './unauthenticated';
+export { default as NotFoundError } from './not-found';
+export { default as BadRequestError } from './bad-request';
+export { default as UnauthorizedError } from './unauthorized';

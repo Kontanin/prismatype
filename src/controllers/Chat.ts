@@ -4,7 +4,11 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export const getMessagesByUser = async (req: Request, res: Response) => {
-  const userId = req?.user.id; // Assuming req.user is populated by auth middleware
+  if (!req.user || !req.user.id) {
+    return res.status(401).json({ error: 'Unauthorized: User not found' });
+  }
+
+  const userId = req.user.id;
   try {
     const messages = await prisma.message.findMany({
       where: { userId },
@@ -17,8 +21,12 @@ export const getMessagesByUser = async (req: Request, res: Response) => {
 };
 
 export const createMessage = async (req: Request, res: Response) => {
+  if (!req.user || !req.user.id) {
+    return res.status(401).json({ error: 'Unauthorized: User not found' });
+  }
+
   const { content } = req.body;
-  const userId = req?.user.id; // Assuming req.user is populated by auth middleware
+  const userId = req.user.id;
   try {
     const message = await prisma.message.create({
       data: { content, userId },

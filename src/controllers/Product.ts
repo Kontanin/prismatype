@@ -1,19 +1,20 @@
-const CustomError = require('../errors');
-``;
-import { Prisma } from '@prisma/client';
+import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
-import express, { Request, Response } from 'express';
-const path = require('path');
+import path from 'path';
+// import CustomError from '../errors';
 
-const CreateProduct = async (req: Request, res: Response) => {
+const prisma = new PrismaClient();
+
+export const CreateProduct = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
   let image = '';
   if (req.files && 'image' in req.files) {
-    image = req.files['image'][0].filename;
+    image = (req.files['image'] as Express.Multer.File[])[0].filename;
   }
 
-  let {
-    id,
+  const {
     productName,
     description,
     stock,
@@ -22,6 +23,7 @@ const CreateProduct = async (req: Request, res: Response) => {
     company,
     category,
   } = req.body;
+
   try {
     const product = await prisma.product.create({
       data: {
@@ -36,91 +38,121 @@ const CreateProduct = async (req: Request, res: Response) => {
         category,
       },
     });
-    return res.json(product).status(200);
+    return res.status(200).json(product);
   } catch (errors) {
     console.log(errors);
-    return res.json({ msg: errors }).status(400);
+    return res.status(400).json({ msg: errors });
   }
 };
 
-const Productlist = async (req: Request, res: Response) => {
-  const products = await prisma.product.findMany({
-    where: {
-      isActive: true,
-    },
-  });
-
-  res.status(200).json({ products, count: products.length });
+export const Productlist = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  try {
+    const products = await prisma.product.findMany({
+      where: {
+        isActive: true,
+      },
+    });
+    return res.status(200).json({ products, count: products.length });
+  } catch (errors) {
+    return res.status(500).json({ msg: 'Failed to fetch products' });
+  }
 };
 
-const EditProduct = async (req: Request, res: Response) => {
+export const EditProduct = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
   let image = '';
   if (req.files && 'image' in req.files) {
-    image = req.files['image'][0].filename;
+    image = (req.files['image'] as Express.Multer.File[])[0].filename;
   }
-  const id = req.params.id;
-  let {
+
+  const { id } = req.params;
+  const {
     productName,
     description,
     stock,
-    status,
     unitPrice,
     freeShipping,
     company,
     category,
   } = req.body;
 
-  const product = await prisma.product.update({
-    where: {
-      id,
-    },
-    data: {
-      productName,
-      description,
-      stock,
-      image,
-      unitPrice,
-      freeShipping,
-      company,
-      category,
-    },
-  });
+  try {
+    const product = await prisma.product.update({
+      where: {
+        id,
+      },
+      data: {
+        productName,
+        description,
+        stock,
+        image,
+        unitPrice: parseFloat(unitPrice),
+        freeShipping,
+        company,
+        category,
+      },
+    });
 
-  if (!product) {
-    return res.status(400).send({ msg: 'not found' });
+    if (!product) {
+      return res.status(400).send({ msg: 'not found' });
+    }
+
+    return res.status(200).send({ product });
+  } catch (errors) {
+    return res.status(500).send({ msg: 'Failed to update product', errors });
   }
-  return res.status(200).send({ product });
 };
 
-const DeleteProduct = async (req: Request, res: Response) => {
-  const id = req.params.id;
+export const DeleteProduct = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  const { id } = req.params;
 
-  const product = await prisma.product.update({
-    where: {
-      id,
-      isActive: true,
-    },
-    data: {
-      isActive: false,
-    },
-  });
+  try {
+    const product = await prisma.product.update({
+      where: {
+        id,
+        isActive: true,
+      },
+      data: {
+        isActive: false,
+      },
+    });
 
-  if (!product) {
-    throw new CustomError.BadRequestError(
-      'Please provide tax and shipping fee'
-    );
+    // if (!product) {
+    //   throw new CustomError.BadRequestError('Please provide tax and shipping fee');
+    // }
+
+    return res.status(200).json(product);
+  } catch (errors) {
+    return res.status(500).json({ msg: 'Failed to delete product', errors });
   }
-
-  return res.status(200).json(product);
 };
 
-const ProductById = async (req: Request, res: Response) => {
-  const id = req.params.id;
-  const product = await prisma.product.findFirst({ where: { id } });
-  return res.status(200).json(product);
+export const ProductById = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  const { id } = req.params;
+
+  try {
+    const product = await prisma.product.findFirst({ where: { id } });
+    return res.status(200).json(product);
+  } catch (errors) {
+    return res.status(500).json({ msg: 'Failed to fetch product', errors });
+  }
 };
 
-const Pagination = async (req: Request, res: Response) => {
+export const Pagination = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
   try {
     // Extract page and limit from query parameters, with default values
     const page = parseInt(req.query.page as string) || 1;
@@ -161,31 +193,21 @@ const Pagination = async (req: Request, res: Response) => {
   }
 };
 
+export const Picture = async (req: Request, res: Response): Promise<void> => {
+  const { id } = req.params;
+  try {
+    const product = await prisma.product.findFirst({ where: { id } });
+    const filename = product?.image || '';
+    const dirPath = path.dirname(path.dirname(__dirname));
+    const filePath = path.join(dirPath, 'src', 'public', 'images', filename);
 
-
-
-const Picture = async (req: Request, res: Response) => {
-  const id = req.params.id;
-  const product = await prisma.product.findFirst({ where: { id } });
-  const filename = product?.image;
-  const dirPath = path.dirname(path.dirname(__dirname));
-
-  const filePath = path.join(dirPath, 'src', 'public', 'images', filename);
-  console.log(filePath);
-  res.sendFile(filePath, (err) => {
-    if (err) {
-      console.error('Error sending file:', err);
-      res.status(404).send('File not found');
-    }
-  });
-};
-
-module.exports = {
-  CreateProduct,
-  EditProduct,
-  DeleteProduct,
-  Productlist,
-  ProductById,
-  Pagination,
-  Picture,
+    res.sendFile(filePath, (err) => {
+      if (err) {
+        console.error('Error sending file:', err);
+        res.status(404).send('File not found');
+      }
+    });
+  } catch (errors) {
+    res.status(500).send('Failed to retrieve image');
+  }
 };
