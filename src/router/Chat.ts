@@ -1,15 +1,10 @@
+import express from 'express';
+import { authentication, authorizePermissions } from '../middlewares/auth';
+import { getMessagesByUser, createMessage } from '../controllers/Chat';
 
+const router = express.Router();
 
-import Chatexpress from 'express';
-import { getChatHistory as Chatreouter } from '../controllers/Chat';
-const {
-  authentication: ChatAuChat,
-  authorizePermissions: ChatAuPerChat,
-} = require('../middlewares/auth');
+router.get('/messages', authentication, getMessagesByUser);
+router.post('/messages', authentication, createMessage);
 
-
-const ChatRouter = Chatexpress.Router();
-
-ChatRouter.get('/history',ChatAuChat, Chatreouter);
-
-module.exports=ChatRouter;
+export default router;
