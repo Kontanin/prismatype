@@ -1,10 +1,9 @@
-class BadRequestError extends Error {
-  statusCode: number;
+import { StatusCodes } from 'http-status-codes';
+import CustomAPIError from './custom-api';
 
+class BadRequestError extends CustomAPIError {
   constructor(message: string) {
-    super(message);
-    this.name = "BadRequestError";
-    this.statusCode = 400;
+    super(message, StatusCodes.BAD_REQUEST);
   }
 }
 

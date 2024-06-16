@@ -1,24 +1,24 @@
-const  { authentication:BlogAu, authorizePermissions:BlogAuPer } =require('../middlewares/auth') ;
+import express from 'express';
+import {
+  authentication ,
+  authorizePermissions 
+} from '../middlewares/auth';
 
-// const CustomError = require('../errors');
-const Blogexpress = require('express');
-
-// const errorHandlerMiddleware = require('../middlewares/error-handler');
-const {
+import upload from '../middlewares/multer';
+import {
   CreateBlog,
   EditBlog,
   DeleteBlog,
   BlogListbyUser,
   Blog,
-} = require('../controllers/Blog');
-const BlogRouter = Blogexpress.Router();
+} from '../controllers/Blog';
 
+const BlogRouter = express.Router();
 
+BlogRouter.post('/create', authentication ,authorizePermissions ('admin'),upload.fields([{ name: 'image' }]), CreateBlog);
+BlogRouter.patch('/edit/:id', authentication, authorizePermissions ('admin'),upload.fields([{ name: 'image' }]), EditBlog);
+BlogRouter.delete('/delete/:id', authentication, authorizePermissions ('admin'), DeleteBlog);
+BlogRouter.get('/bloglist', authentication, BlogListbyUser);
+BlogRouter.get('/blog-id/:id', authentication, Blog);
 
-BlogRouter.post('/create', BlogAu,BlogAuPer('admin'), CreateBlog);
-
-BlogRouter.patch('/edit/:id', BlogAu, EditBlog);
-BlogRouter.delete('/delete/:id', BlogAu,BlogAuPer('admin'), DeleteBlog);
-BlogRouter.get('/bloglist', BlogAu, BlogListbyUser);
-BlogRouter.get('/blog-id/:id', BlogAu, Blog);
-module.exports = BlogRouter;
+export default BlogRouter;

@@ -1,5 +1,4 @@
-// src/errors/custom-api.ts
-export default class CustomAPIError extends Error {
+class CustomAPIError extends Error {
   statusCode: number;
 
   constructor(message: string, statusCode: number) {
@@ -7,3 +6,5 @@ export default class CustomAPIError extends Error {
     this.statusCode = statusCode;
   }
 }
+
+export default CustomAPIError;

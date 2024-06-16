@@ -10,11 +10,3 @@ router.patch('/promotions/:id', authentication, authorizePermissions('admin'), u
 router.delete('/promotions/:id', authentication, authorizePermissions('admin'), deletePromotion);
 
 export default router;
-// const swaggerUi = require('swagger-ui-express');
-// const swaggerDocument = require('./swagger.json');
-
-// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-// app.get('/api-docs', swaggerUi.setup(swaggerDocument));
-// app.use('/api/chat', chatRoutes);
-// app.use('/api/feedback', feedbackRoutes);
-// app.use('/api/promotion', promotionRoutes);

@@ -1,12 +1,15 @@
-import CustomAPIError from './custom-api';
-import UnauthenticatedError from './unauthenticated';
-import NotFoundError from './not-found';
 import BadRequestError from './bad-request';
+import NotFoundError from './not-found';
+import UnauthenticatedError from './unauthenticated';
 import UnauthorizedError from './unauthorized';
+import CustomAPIError from './custom-api';
 
-// src/errors/index.ts
-export { default as CustomAPIError } from './custom-api';
-export { default as UnauthenticatedError } from './unauthenticated';
-export { default as NotFoundError } from './not-found';
-export { default as BadRequestError } from './bad-request';
-export { default as UnauthorizedError } from './unauthorized';
+const CustomError = {
+  BadRequestError,
+  NotFoundError,
+  UnauthenticatedError,
+  UnauthorizedError,
+  CustomAPIError,
+};
+
+export default CustomError;

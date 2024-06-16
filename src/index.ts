@@ -9,11 +9,11 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 
 import UserRouter from './router/User';
-// import OrderRouter from './router/Orders';
-// import BlogRouter from './router/Blog';
-// import chatRoutes from './router/Chat';
-// import feedbackRoutes from './router/Feedback';
-// import promotionRoutes from './router/Promotion';
+import OrderRouter from './router/Orders';
+import BlogRouter from './router/Blog';
+import chatRoutes from './router/Chat';
+import feedbackRoutes from './router/Feedback';
+import promotionRouter from './router/Promotion';
 
 // const swaggerUi = require('swagger-ui-express');
 // const swaggerDocument = require('./swagger.json');
@@ -40,12 +40,12 @@ app.use(cors());
 
 app.use(bodyParser.json({ limit: '5mb' }));
 app.use(bodyParser.urlencoded({ limit: '5mb', extended: true }));
-// app.use('/api/chat', chatRoutes);
-// app.use('/api/feedback', feedbackRoutes);
-// app.use('/api/promotion', promotionRoutes);
-// app.use('/blog', BlogRouter);
+app.use('/api/chat', chatRoutes);
+app.use('/api/feedback', feedbackRoutes);
+app.use('/promotion', promotionRouter);
+app.use('/blog', BlogRouter);
 app.use('/user', UserRouter);
-// app.use('/orders', OrderRouter);
+app.use('/orders', OrderRouter);
 app.use('/product', ProductRouter);
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
