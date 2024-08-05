@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { Request, Response } from 'express';
-
+import data from '../MockUpData/data.json';
 const prisma = new PrismaClient();
 
 export interface Message {
@@ -47,7 +47,7 @@ export async function fetchMessages(req: Request, res: Response) {
         isRead: false,
       },
     });
-
+    //  return res.status(200).json({data:data})
     return res.status(200).json({
       messages,
       unreadCount,
@@ -109,6 +109,8 @@ export async function createMessage(req: Request, res: Response) {
         recipient: true,
       },
     });
+    // console.log(content,userId);
+    // res.status(200).json({"msg": "success"});
 
     return res.status(201).json(message);
   } catch (error) {

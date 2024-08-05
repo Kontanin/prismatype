@@ -45,16 +45,3 @@ ProductRouter.post('/page', Pagination);
 ProductRouter.get('/image/:id', Picture);
 
 export default ProductRouter;
-// app.use('/api/chat', chatRoutes);
-// app.use('/api/feedback', feedbackRoutes);
-// app.use('/api/promotion', promotionRoutes);
-// app.use('/blog', BlogRouter);
-// app.use('/user', UserRouter);
-// app.use('/orders', OrderRouter);
-
-// import UserRouter from './router/User';
-// import OrderRouter from './router/Orders';
-// import BlogRouter from './router/Blog';
-// import chatRoutes from './router/Chat';
-// import feedbackRoutes from './router/Feedback';
-// import promotionRoutes from './router/Promotion';
