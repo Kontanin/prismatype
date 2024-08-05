@@ -1,10 +1,9 @@
 import express from 'express';
-import { authentication, authorizePermissions } from '../middlewares/auth';
-import { getMessagesByUser, createMessage } from '../controllers/Chat';
+import { authentication } from '../middlewares/auth';
+import { getMessageHistory, createMessage } from '../controllers/Chat';
 
-const router = express.Router();
+const ChatRouter = express.Router();
 
-router.get('/messages', authentication, getMessagesByUser);
-router.post('/messages', authentication, createMessage);
-
-export default router;
+ChatRouter.get('/', authentication, getMessageHistory);
+ChatRouter.post('/', authentication, createMessage);
+export default ChatRouter;

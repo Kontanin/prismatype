@@ -1,44 +1,119 @@
-import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
-import CustomError from '../errors';
+import { Request, Response } from 'express';
 
 const prisma = new PrismaClient();
 
-export const getMessagesByUser = async (req: Request, res: Response) => {
-  if (!req.user || !req.user.id) {
-    throw new CustomError.UnauthenticatedError('User not authenticated');
+export interface Message {
+  content: string;
+  senderId: string;
+  recipientId: string;
+  timestamp?: Date;
+  isRead?: boolean;
+}
+
+// Fetch messages between two users and count unread messages
+export async function fetchMessages(req: Request, res: Response) {
+  const { userIdA, userIdB } = req.body;
+
+  try {
+    // Fetch messages between the two users
+    const messages = await prisma.message.findMany({
+      where: {
+        OR: [
+          {
+            senderId: userIdA,
+            recipientId: userIdB,
+          },
+          {
+            senderId: userIdB,
+            recipientId: userIdA,
+          },
+        ],
+      },
+      orderBy: {
+        createdAt: 'asc', // Order messages chronologically
+      },
+      include: {
+        sender: true,
+        recipient: true,
+      },
+    });
+
+    // Count unread messages sent by userIdB to userIdA
+    const unreadCount = await prisma.message.count({
+      where: {
+        senderId: userIdB,
+        recipientId: userIdA,
+        isRead: false,
+      },
+    });
+
+    return res.status(200).json({
+      messages,
+      unreadCount,
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ error: 'An error occurred while fetching messages.' });
   }
+}
 
-  const userId = req.user.id;
+// Fetch all messages for a user (unchanged)
+export async function fetchAllMessages(req: Request, res: Response) {
+  const { userId } = req.params; // Assuming you pass the userId in the URL as a parameter
 
-  const messages = await prisma.message.findMany({
-    where: { userId },
-    orderBy: { createdAt: 'desc' },
-  });
+  try {
+    const messages = await prisma.message.findMany({
+      where: {
+        OR: [
+          {
+            senderId: userId,
+          },
+          {
+            recipientId: userId,
+          },
+        ],
+      },
+      orderBy: {
+        createdAt: 'asc', // Order messages chronologically
+      },
+      include: {
+        sender: true,
+        recipient: true,
+      },
+    });
 
-  if (!messages || messages.length === 0) {
-    throw new CustomError.NotFoundError('No messages found for this user');
+    return res.status(200).json(messages);
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ error: 'An error occurred while fetching all messages.' });
   }
+}
 
-  res.status(200).json(messages);
-};
+// Create a new message (unchanged)
+export async function createMessage(req: Request, res: Response) {
+  const { content, senderId, recipientId, isRead } = req.body;
 
-export const createMessage = async (req: Request, res: Response) => {
-  if (!req.user || !req.user.id) {
-    throw new CustomError.UnauthenticatedError('User not authenticated');
+  try {
+    const message = await prisma.message.create({
+      data: {
+        content: content,
+        senderId: senderId,
+        recipientId: recipientId,
+        isRead: isRead ?? false, // Default to false if not provided
+      },
+      include: {
+        sender: true,
+        recipient: true,
+      },
+    });
+
+    return res.status(201).json(message);
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ error: 'An error occurred while creating the message.' });
   }
-
-  const { content } = req.body;
-  const userId = req.user.id;
-
-  const message = await prisma.message.create({
-    data: { content, userId },
-  });
-
-  res.status(201).json(message);
-};
-
-export default {
-  getMessagesByUser,
-  createMessage,
-};
+}

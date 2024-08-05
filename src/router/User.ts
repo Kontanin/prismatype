@@ -5,19 +5,22 @@ import {
 } from '../middlewares/auth';
 import {
   Register,
-  Login,
+
   DeleteUser,
   UpdateUser,
   Information,
   UpdatePass,
   ValidateToken,
+  logout
 } from '../controllers/User';
 
 const router = express.Router();
 
-router.post('/register', Register);
-router.post('/login', Login);
 
+
+router.post('/register', Register);
+
+router.post('/logout', logout);
 router.delete('/delete/:id', UserAu, UserAuPer('admin'), DeleteUser);
 
 router.patch('/update/:id', UserAu, UpdateUser);
