@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import CustomError from '../errors';
-
+import data from '../MockUpData/data.json'
 const prisma = new PrismaClient();
 
 export const getMessagesByUser = async (req: Request, res: Response) => {
@@ -10,6 +10,9 @@ export const getMessagesByUser = async (req: Request, res: Response) => {
   }
 
   const userId = req.user.id;
+
+//  res.status(200).json({data:data})
+
 
   const messages = await prisma.message.findMany({
     where: { userId },
@@ -34,7 +37,8 @@ export const createMessage = async (req: Request, res: Response) => {
   const message = await prisma.message.create({
     data: { content, userId },
   });
-
+// console.log(content,userId);
+// res.status(200).json({"msg": "success"});
   res.status(201).json(message);
 };
 
