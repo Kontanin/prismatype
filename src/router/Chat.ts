@@ -1,9 +1,14 @@
 import express from 'express';
 import { authentication } from '../middlewares/auth';
-import { getMessageHistory, createMessage } from '../controllers/Chat';
+import {
+  fetchAllMessages,
+  createMessage,
+  fetchMessages,
+} from '../controllers/Chat';
 
 const ChatRouter = express.Router();
 
-ChatRouter.get('/', authentication, getMessageHistory);
+ChatRouter.get('/:id', authentication, fetchAllMessages);
 ChatRouter.post('/', authentication, createMessage);
+ChatRouter.get('/', authentication, fetchMessages);
 export default ChatRouter;

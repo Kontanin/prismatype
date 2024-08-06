@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { Request, Response } from 'express';
 import data from '../MockUpData/data.json';
+
 const prisma = new PrismaClient();
 
 export interface Message {
