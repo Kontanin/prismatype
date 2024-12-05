@@ -38,7 +38,6 @@ app.use('/orders', OrderRouter);
 app.use('/product', ProductRouter);
 app.use('/chat', ChatRouter);
 
-
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 

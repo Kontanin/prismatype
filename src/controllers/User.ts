@@ -13,6 +13,18 @@ const FindUser = async (id: string) => {
   return findUser;
 };
 
+export const FindUserId = async (req: Request, res: Response) => {
+  const { firstname } = req.params;
+  const Inform = await prisma.user.findFirst({
+    where: { firstname: firstname },
+  });
+  if (!Inform) {
+    return res.status(400).json({ message: 'not fouund this name in stystem' });
+  }
+
+  return res.status(200).json({ id: Inform.id });
+};
+
 export const Register = async (req: Request, res: Response) => {
   const {
     email,
@@ -56,8 +68,6 @@ export const Register = async (req: Request, res: Response) => {
     .status(201)
     .json({ message: 'User created successfully', user: newUser });
 };
-
-
 
 export const DeleteUser = async (req: Request, res: Response) => {
   const { id } = req.params;
