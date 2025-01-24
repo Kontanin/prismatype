@@ -1,14 +1,16 @@
 import express from 'express';
 import { authentication } from '../middlewares/auth';
-import {
-  fetchAllMessages,
-  createMessage,
-  fetchMessages,
-} from '../controllers/Chat';
+import { createMessage, fetchMessages, chatHistory } from '../controllers/Chat';
 
 const ChatRouter = express.Router();
+// เอาไว้ fetch message
+// ChatRouter.get('/:id', authentication, fetchAllMessages);
 
-ChatRouter.get('/:id', authentication, fetchAllMessages);
+// เอาไว้ให้admin create message
 ChatRouter.post('/', authentication, createMessage);
-ChatRouter.get('/', authentication, fetchMessages);
+
+// // คสรมีอันเดียวและส่งid ด้วย:id
+ChatRouter.get('/:UserId', authentication, fetchMessages);
+
+ChatRouter.get('/chat-box/adminHistory', authentication, chatHistory);
 export default ChatRouter;

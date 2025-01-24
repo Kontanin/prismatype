@@ -38,7 +38,7 @@ export const initializeSocket = (io: Server) => {
       console.log(`Message from ${userName} in ${roomName}: ${message}`);
 
       // ส่งข้อความถึงทุกคนในห้อง
-      console.log(roomName, 'roomName');
+      // console.log(roomName, 'roomName');
       io.to(roomName).emit('new-message', 'testform tojoin');
       // socket.emit('new-message', 'back form server');
     });

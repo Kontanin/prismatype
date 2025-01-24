@@ -30,7 +30,7 @@ app.use(bodyParser.json({ limit: '5mb' }));
 app.use(bodyParser.urlencoded({ limit: '5mb', extended: true }));
 app.use('/api/auth', AuthRoter);
 
-app.use('/api/feedback', feedbackRoutes);
+app.use('/feedback', feedbackRoutes);
 app.use('/promotion', promotionRouter);
 app.use('/blog', BlogRouter);
 app.use('/user', UserRouter);
@@ -41,7 +41,7 @@ app.use('/chat', ChatRouter);
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
 export const SECRET_KEY = process.env.SECRET_KEY as string;
 export const REFRESH_SECRET_KEY = process.env.REFRESH_SECRET_KEY as string;
 // Create HTTP server

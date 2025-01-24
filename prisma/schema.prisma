@@ -8,24 +8,24 @@ datasource db {
 }
 
 model User {
-  id               String     @id @default(uuid())
-  email            String
-  password         String
-  role             String
-  isActive         Boolean
-  firstname        String
-  lastname         String
-  address          String?
-  subdistrict      String?
-  country          String?
-  zipcode          Int?
-  createdAt        DateTime   @default(now())
-  updatedAt        DateTime   @updatedAt
-  orders           Order[] // A user can have multiple orders
-  blob             Blob[]
-  feedbacks        Feedback[]
-  messagesSent     Message[]  @relation("SentMessages")
-  messagesReceived Message[]  @relation("ReceivedMessages")
+  id           String         @id @default(uuid())
+  email        String
+  password     String
+  role         String
+  isActive     Boolean        @default(true)
+  firstname    String
+  lastname     String
+  address      String?
+  subdistrict  String?
+  country      String?
+  zipcode      Int?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  orders       Order[] // A user can have multiple orders
+  blob         Blob[]
+  feedbacks    Feedback[]
+  messagesSent Message[]      @relation("SentMessages")
+  createId     Conversation[] @relation("CreateMessage")
 }
 
 model Blob {
@@ -33,7 +33,7 @@ model Blob {
   title     String   @unique
   tag       String?
   content   String
-  isActive  Boolean
+  isActive  Boolean  @default(true)
   userId    String // Reference to the User's ID
   username  String
   createdAt DateTime @default(now())
@@ -44,7 +44,7 @@ model Blob {
 model Product {
   id           String      @id @default(uuid())
   productName  String      @unique
-  isActive     Boolean
+  isActive     Boolean     @default(true)
   description  String?
   stock        Int?
   unitPrice    Int?
@@ -61,7 +61,7 @@ model Product {
 
 model Order {
   id              String      @id @default(uuid())
-  isActive        Boolean
+  isActive        Boolean     @default(true)
   shippingFee     Boolean?
   total           Int
   paymentIntentId String?
@@ -79,7 +79,7 @@ model OrderItem {
   id        String   @id @default(uuid())
   quantity  Int
   unitPrice Int
-  isActive  Boolean
+  isActive  Boolean  @default(true)
   productId String // Each order item belongs to one product
   orderId   String // Each order item belongs to one order
   createdAt DateTime @default(now())
@@ -92,7 +92,7 @@ model Feedback {
   id        String   @id @default(uuid())
   title     String
   content   String
-  isActive  Boolean
+  isActive  Boolean  @default(true)
   userId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -100,14 +100,15 @@ model Feedback {
 }
 
 model Message {
-  id          Int      @id @default(autoincrement())
-  content     String
-  createdAt   DateTime @default(now())
-  senderId    String
-  recipientId String
-  isRead      Boolean  @default(false)
-  sender      User     @relation(fields: [senderId], references: [id], name: "SentMessages")
-  recipient   User     @relation(fields: [recipientId], references: [id], name: "ReceivedMessages")
+  id           Int           @id @default(autoincrement())
+  content      String
+  createdAt    DateTime      @default(now())
+  senderId     String
+  isRead       Boolean       @default(false)
+  conId        String
+  isActive     Boolean       @default(true)
+  User         User          @relation(fields: [senderId], references: [id], name: "SentMessages")
+  Conversation Conversation? @relation(fields: [conId], references: [id])
 }
 
 model Promotion {
@@ -120,4 +121,14 @@ model Promotion {
   products   Product[]
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
+  isActive   Boolean   @default(true)
+}
+
+model Conversation {
+  id         String    @id @default(uuid())
+  isActive   Boolean   @default(true)
+  createDate DateTime  @default(now())
+  UserId     String    @unique
+  sender     User      @relation(fields: [UserId], references: [id], name: "CreateMessage")
+  Message    Message[]
 }

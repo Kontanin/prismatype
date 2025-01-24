@@ -32,9 +32,8 @@ export const login = async (req: Request, res: Response) => {
   if (!user || !(await bcrypt.compare(password, user.password))) {
     throw new CustomError.BadRequestError('Invalid email or password');
   }
-  console.log(user, SECRET_KEY, 'user', REFRESH_SECRET_KEY);
   const accessToken = jwt.sign({ id: user.id, role: user.role }, SECRET_KEY, {
-    expiresIn: '15m',
+    expiresIn: '15d',
   });
 
   const refreshToken = jwt.sign(

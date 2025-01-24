@@ -4,8 +4,8 @@ import { getFeedbackByUser, createFeedback, deleteFeedback } from '../controller
 
 const router = express.Router();
 
-router.get('/feedbacks', authentication, getFeedbackByUser);
-router.post('/feedbacks', authentication, createFeedback);
-router.delete('/feedbacks/:id', authentication, authorizePermissions('admin'), deleteFeedback);
+router.get('/', authentication, getFeedbackByUser);
+router.post('/', authentication, createFeedback);
+router.delete('/:id', authentication, authorizePermissions('admin'), deleteFeedback);
 
 export default router;
