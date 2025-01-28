@@ -14,8 +14,11 @@ type User = {
 };
 
 export const initializeSocket = (io: Server) => {
+  let l = 1;
+  console.log('USER CONNECTEDcout', l);
   io.on('connection', (socket: AuthenticatedSocket) => {
-    console.log('USER CONNECTED');
+    l++;
+    console.log('USER CONNECTED', l);
     // Listen for new messages
     // socket.on('setup', (userData) => {
     //   console.log('USER CONNECTED', userData);
@@ -25,34 +28,17 @@ export const initializeSocket = (io: Server) => {
     socket.on('joinRoom', (roomName) => {
       socket.join(roomName);
       console.log(`User ${socket.id} joined room: ${roomName}`);
-
-      // ส่งข้อความไปยังห้องที่ผู้ใช้อยู่
-      io.to(roomName).emit(
-        'new-message',
-        `User ${socket.id} has joined the room: ${roomName}`
-      );
     });
 
     // เมื่อผู้ใช้ส่งข้อความในห้อง
-    socket.on('sendMessageToRoom', ({ roomName, userName, message }) => {
-      console.log(`Message from ${userName} in ${roomName}: ${message}`);
-
-      // ส่งข้อความถึงทุกคนในห้อง
-      // console.log(roomName, 'roomName');
-      io.to(roomName).emit('new-message', 'testform tojoin');
-      // socket.emit('new-message', 'back form server');
-    });
-    socket.on('typing', (room) => socket.in(room).emit('typing'));
-    socket.on('stop typing', (room) => socket.in(room).emit('stop typing'));
-
-    socket.on('sent-message', (newMessageRecieved) => {
-      console.log('newMessageRecieved', newMessageRecieved);
-      socket.emit('new-message', 'back form server');
+    socket.on('sendMessageToRoom', ({ roomName, message }) => {
+      console.log(`Message from  in ${roomName}: ${message}`);
+      io.to(roomName).emit('new-message', message);
     });
 
-    socket.off('setup', (userData) => {
-      console.log('USER DISCONNECTED');
-      socket.leave(userData._id);
-    });
+    // socket.off('setup', (userData) => {
+    //   console.log('USER DISCONNECTED');
+    //   socket.leave(userData._id);
+    // });
   });
 };

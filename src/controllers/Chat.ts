@@ -31,7 +31,7 @@ export async function fetchMessages(req: Request, res: Response) {
           OR: [{ id: check.id }],
         },
       });
-      console.log(checkCon, 'checkCon');
+
       if (checkCon) {
         const checkMessage = await prisma.message.findMany({
           where: {
@@ -44,8 +44,11 @@ export async function fetchMessages(req: Request, res: Response) {
               },
             },
           },
+          orderBy: {
+            createdAt: 'asc',
+          },
         });
-        console.log(checkMessage, 'checkMessage');
+
         return res.status(200).json(checkMessage);
       }
     }
@@ -87,7 +90,7 @@ export async function createMessage(req: Request, res: Response) {
   console.log('create message');
   // Validate required fields
   if (!customerId || !senderId || !content) {
-    console.log('Missing required fields',customerId,senderId,content);
+    console.log('Missing required fields', customerId, senderId, content);
     return res.status(400).json({ error: 'Missing required fields' });
   }
 
