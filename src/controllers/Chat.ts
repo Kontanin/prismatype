@@ -85,133 +85,203 @@ export async function createCon(Id: String) {
 }
 
 // Create a new message (unchanged)
+// export async function createMessage(req: Request, res: Response) {
+//   const { content, isRead, customerId, senderId, conId } = req.body;
+//   console.log('create message');
+//   // Validate required fields
+//   if (!customerId || !senderId || !content) {
+//     console.log('Missing required fields', customerId, senderId, content);
+//     return res.status(400).json({ error: 'Missing required fields' });
+//   }
+
+//   try {
+//     let newConId = conId;
+
+//     // Check if `conId` is provided and valid
+//     if (newConId || senderId) {
+//       console.log('Checking if provided conId is valid...');
+//       try {
+//         const existingConversation = await prisma.conversation.findFirst({
+//           where: {
+//             OR: [
+//               { id: newConId }, // Match by provided conId
+//               { UserId: customerId }, // Match by customerId
+//             ],
+//           },
+//         });
+//         if (existingConversation) {
+//           newConId = existingConversation.id;
+//           const checkUseradmin = await prisma.user.findFirst({
+//             where: {
+//               id: customerId,
+//             },
+//           });
+//           if (checkUseradmin) {
+//             if (checkUseradmin.role === 'admin') {
+//               return res.status(400).json({
+//                 error: 'bad required please not usea adminId as customerId ',
+//               });
+//             }
+//           }
+//         }
+//       } catch (error) {
+//         console.error('Error finding conversation by conId:', error);
+//         return res
+//           .status(500)
+//           .json({ error: 'Failed to find conversation', details: error });
+//       }
+//     }
+
+//     // // If no valid `conId`, create a new conversation
+//     if (!newConId) {
+//       console.log('Creating new conversation...');
+//       try {
+//         const newConversation = await prisma.conversation.create({
+//           data: {
+//             UserId: customerId,
+//           },
+//         });
+//         newConId = newConversation.id;
+//       } catch (error) {
+//         console.error('Error creating conversation:', error);
+//         ``;
+//         return res
+//           .status(500)
+//           .json({ error: 'Failed to create conversation', details: error });
+//       }
+//     }
+
+//     //   console.log('Resolved conversation ID:', newConId);
+
+//     // Create the message
+//     try {
+//       const message = await prisma.message.create({
+//         data: {
+//           content: content as string,
+//           senderId: senderId as string,
+//           isRead: isRead ?? false, // Default to false if not provided
+//           conId: newConId as string,
+//         },
+//       });
+//       return res.status(200).json({ msg: message });
+//     } catch (error) {
+//       console.error('Error creating message:', error);
+//       return res
+//         .status(500)
+//         .json({ error: 'Failed to create message', details: error });
+//     }
+//   } catch (error) {
+//     console.error('Unexpected error:', error);
+//     return res
+//       .status(500)
+//       .json({ error: 'Unexpected error occurred', details: error });
+//   }
+// }
+// export async function chatHistory(req: Request, res: Response) {
+//   console.log('Fetching chat history...');
+//   const { page = 1, pageSize = 10 } = req.query;
+//   const skip = (Number(page) - 1) * Number(pageSize); // Calculate the offset for pagination
+//   const take = Number(pageSize); // Define how many messages to fetch
+//   try {
+//     // Fetch distinct chats involving the admin
+//     const topMessages = await prisma.message.findMany({
+//       distinct: ['conId'], // Specify the field to get distinct results
+//       take: 10, // Limit the results to the top 10
+//       orderBy: {
+//         createdAt: 'desc', // Sort by the latest created messages
+//       },
+//       select: {
+//         id: true,
+//         content: true,
+//         conId: true,
+//         createdAt: true,
+//         User: {
+//           select: {
+//             firstname: true,
+//             lastname: true,
+//           },
+//         },
+//         Conversation: {
+//           select: {
+//             UserId: true,
+//           },
+//         },
+//       },
+//     });
+
+//     res.status(200).json(topMessages);
+//   } catch (error) {
+//     console.error('Error fetching chat history:', error);
+//     res.status(500).json({ error: 'Could not fetch chats' });
+//   }
+// }
 export async function createMessage(req: Request, res: Response) {
   const { content, isRead, customerId, senderId, conId } = req.body;
-  console.log('create message');
+
   // Validate required fields
   if (!customerId || !senderId || !content) {
-    console.log('Missing required fields', customerId, senderId, content);
     return res.status(400).json({ error: 'Missing required fields' });
   }
 
   try {
-    let newConId = conId;
+    // Try to find or create conversation
+    const conversationId = await getOrCreateConversation(customerId, conId);
 
-    // Check if `conId` is provided and valid
-    if (newConId || senderId) {
-      console.log('Checking if provided conId is valid...');
-      try {
-        const existingConversation = await prisma.conversation.findFirst({
-          where: {
-            OR: [
-              { id: newConId }, // Match by provided conId
-              { UserId: customerId }, // Match by customerId
-            ],
-          },
-        });
-        if (existingConversation) {
-          newConId = existingConversation.id;
-          const checkUseradmin = await prisma.user.findFirst({
-            where: {
-              id: customerId,
-            },
-          });
-          if (checkUseradmin) {
-            if (checkUseradmin.role === 'admin') {
-              return res.status(400).json({
-                error: 'bad required please not usea adminId as customerId ',
-              });
-            }
-          }
-        }
-      } catch (error) {
-        console.error('Error finding conversation by conId:', error);
-        return res
-          .status(500)
-          .json({ error: 'Failed to find conversation', details: error });
-      }
-    }
-
-    // // If no valid `conId`, create a new conversation
-    if (!newConId) {
-      console.log('Creating new conversation...');
-      try {
-        const newConversation = await prisma.conversation.create({
-          data: {
-            UserId: customerId,
-          },
-        });
-        newConId = newConversation.id;
-      } catch (error) {
-        console.error('Error creating conversation:', error);
-        ``;
-        return res
-          .status(500)
-          .json({ error: 'Failed to create conversation', details: error });
-      }
-    }
-
-    //   console.log('Resolved conversation ID:', newConId);
-
-    // Create the message
-    try {
-      const message = await prisma.message.create({
-        data: {
-          content: content as string,
-          senderId: senderId as string,
-          isRead: isRead ?? false, // Default to false if not provided
-          conId: newConId as string,
-        },
-      });
-      return res.status(200).json({ msg: message });
-    } catch (error) {
-      console.error('Error creating message:', error);
-      return res
-        .status(500)
-        .json({ error: 'Failed to create message', details: error });
-    }
-  } catch (error) {
-    console.error('Unexpected error:', error);
-    return res
-      .status(500)
-      .json({ error: 'Unexpected error occurred', details: error });
-  }
-}
-export async function chatHistory(req: Request, res: Response) {
-  console.log('Fetching chat history...');
-  const { page = 1, pageSize = 10 } = req.query;
-  const skip = (Number(page) - 1) * Number(pageSize); // Calculate the offset for pagination
-  const take = Number(pageSize); // Define how many messages to fetch
-  try {
-    // Fetch distinct chats involving the admin
-    const topMessages = await prisma.message.findMany({
-      distinct: ['conId'], // Specify the field to get distinct results
-      take: 10, // Limit the results to the top 10
-      orderBy: {
-        createdAt: 'desc', // Sort by the latest created messages
-      },
-      select: {
-        id: true,
-        content: true,
-        conId: true,
-        createdAt: true,
-        User: {
-          select: {
-            firstname: true,
-            lastname: true,
-          },
-        },
-        Conversation: {
-          select: {
-            UserId: true,
-          },
-        },
+    // Create message with the conversation ID
+    const message = await prisma.message.create({
+      data: {
+        content: content as string,
+        senderId: senderId as string,
+        isRead: isRead ?? false,
+        conId: conversationId,
       },
     });
 
-    res.status(200).json(topMessages);
+    return res.status(200).json({ msg: message });
   } catch (error) {
-    console.error('Error fetching chat history:', error);
-    res.status(500).json({ error: 'Could not fetch chats' });
+    console.error('Error in createMessage:', error);
+    return res.status(500).json({
+      error: 'Failed to process message',
+      details: error instanceof Error ? error.message : error,
+    });
+  }
+}
+
+async function getOrCreateConversation(
+  customerId: string,
+  conId?: string
+): Promise<string> {
+  // Try to find existing conversation if conId provided
+  if (conId) {
+    const existingId = await findExistingConversation(customerId, conId);
+    if (existingId) return existingId;
+  }
+
+  // If no valid conversation found, create new one
+  try {
+    const newConversation = await prisma.conversation.create({
+      data: { UserId: customerId },
+    });
+    return newConversation.id;
+  } catch (error) {
+    console.error('Error creating conversation:', error);
+    throw new Error('Failed to create conversation');
+  }
+}
+
+async function findExistingConversation(
+  customerId: string,
+  conId?: string
+): Promise<string | null> {
+  try {
+    const existingConversation = await prisma.conversation.findFirst({
+      where: {
+        OR: [{ id: conId }, { UserId: customerId }],
+      },
+    });
+    return existingConversation?.id || null;
+  } catch (error) {
+    console.error('Error finding conversation:', error);
+    throw new Error('Failed to find conversation');
   }
 }
